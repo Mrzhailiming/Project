@@ -18,45 +18,37 @@ typedef unsigned int uint;
 //k[64] K[i] = floor(2^(32) * abs(sin(i + 1))) 
 //s[64] 循环左移的位数 s[64] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7,12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10,15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
 //uint s[64];
-uint k[64];
+class md5{
+public:
+	//初始化
+	void init();
+	//获取文件长度
+	uint totalByte();
+	//获取文件最后一个数据块的长度
+	uint lastByte();
 
-//以字节为单位
-uint totalByte;//总共的字节数
-uint lastByte;//最后一个数据块的字节数
-uint A;
-uint B;
-uint C;
-uint D;
-//16 * 4 字节
-uint chunk[CHUNK_SIZE];
+	//填充冗余信息
+	void fillChunk(uint* chunk);
+	//处理一个chunk
+	void dealChunk(uint* chunk);
+	//循环左移
+	uint shift(uint tmp, uint shiftNumber);
+
+	///整型转字符串,最后的MD5输出
+	void turnStr(uint src);
+private:
+	uint _totalByte;
+	uint _lastByte;
+	static uint s[64];
+	static uint k[64];
+
+	uint _chunk[CHUNK_SIZE];
+	uint A, B, C, D;
+};
+
 
 //字符串的MD5
-
-
 //文件的MD5
-
-
-//初始化 : k[64] ABCD 文件长度 最后一个数据块的长度
-void init();
-
-//循环移位
-uint shift(uint tmp, uint shiftNumber);
-
-//获取文件的长度
-
-
-//获取最后一块数据的长度
-
-
-//一个chunk的处理
-void chunkMD5(uint* chunk);
-
-//填充冗余信息 
-void fillChunk(uint* chunk);
-
-
-//整型转字符串,最后的MD5输出
-//获取每一个字节的数据
 
 
 #endif __MD5_H__

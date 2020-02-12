@@ -2,33 +2,45 @@
 #include <math.h>
 #include <iostream>
 
-uint s[64] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14,
-20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23,
-4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10,
-15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
-void init(){
+
+//以字节为单位
+uint totalByte;//总共的字节数
+uint lastByte;//最后一个数据块的字节数
+uint A;
+uint B;
+uint C;
+uint D;
+//16 * 4 字节
+uint chunk[CHUNK_SIZE];
+
+
+
+void md5::init(){
 	//初始化ABCD
 	A = _atemp;
 	B = _btemp;
 	C = _ctemp;
 	D = _dtemp;
 	//长度
-	totalByte = lastByte = 0;
+	_totalByte = _lastByte = 0;
 	//初始化s[i],k[i]
 	
 	for (int i = 0; i < 64; ++i){
 		k[i] = (uint)(abs(sin(i + 1.0)) * pow(2.0, 32));
 	}
-
+	s[64] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14,
+		20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23,
+		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10,
+		15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
 }
 
 //循环移位
-uint shift(uint tmp, uint shiftNumber){
+uint md5::shift(uint tmp, uint shiftNumber){
 	return (tmp << shiftNumber) | (tmp >> (32 - shiftNumber));
 }
 
 //一个chunk的处理
-void chunkMD5(uint* chunk){
+void md5::dealChunk(uint* chunk){
 	uint a = A;
 	uint b = B;
 	uint c = C;
@@ -64,24 +76,28 @@ void chunkMD5(uint* chunk){
 }
 
 //填充冗余信息 
-void fillChunk(uint* chunk){
+void md5::fillChunk(uint* chunk){
 	//先填一个字节,如果剩余的不够64bit(8字节)
 	//填充冗余信息后,处理当前的chunk
 	//则构建一个512bit(64字节)的数据块
 
 	//待填充的第一个字节的位置
-	char* p = (char*)chunk + lastByte;
+	char* p = (char*)chunk + _lastByte;
 	*p = (char)0x80;
 	++p;
-	int remainNum = CHUNK_BYTE - lastByte - 1;
+	//填充1字节后,剩余的字节数
+	int remainNum = CHUNK_BYTE - _lastByte - 1;
 	//剩余不够64bit
 	if (remainNum < 8){
+		//把剩余填充0
 		memset(p, 0, remainNum * 8);
-		chunkMD5(chunk);
+		//处理chunk
+		dealChunk(chunk);
+		//把当前chunk全部置为0,当做新开的chunk
 		memset(chunk, 0, CHUNK_BYTE * 8);
 	}
 	else{
 		memset(p, 0, remainNum * 4);
 	}
-
+	dealChunk(chunk);
 }

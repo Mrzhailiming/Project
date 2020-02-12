@@ -1,26 +1,14 @@
-﻿生成启动时间为 2020/2/12 12:17:04。
+﻿生成启动时间为 2020/2/12 17:38:13。
      1>项目“D:\我的\学习\比特科技\Project\Project\项目1\计算文件MD5\计算文件MD5\计算文件MD5.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          D:\首选安装位置\VS2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MD5.cpp main.cpp
-         MD5.cpp
-         正在生成代码...
-         正在编译...
          main.cpp
+         MD5.cpp
+     1>d:\我的\学习\比特科技\project\project\项目1\计算文件md5\计算文件md5\md5.cpp(34): error C2440: “=”: 无法从“initializer-list”转换为“uint”
+                 只能将带有 0 或一个元素的初始值设定项列表转换为此类型
          正在生成代码...
-       Link:
-         D:\首选安装位置\VS2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\我的\学习\比特科技\Project\Project\项目1\计算文件MD5\Debug\计算文件MD5.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\我的\学习\比特科技\Project\Project\项目1\计算文件MD5\Debug\计算文件MD5.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\我的\学习\比特科技\Project\Project\项目1\计算文件MD5\Debug\计算文件MD5.lib" /MACHINE:X86 Debug\main.obj
-         Debug\MD5.obj
-     1>MD5.obj : error LNK2005: "unsigned int * k" (?k@@3PAIA) 已经在 main.obj 中定义
-     1>MD5.obj : error LNK2005: "unsigned int totalByte" (?totalByte@@3IA) 已经在 main.obj 中定义
-     1>MD5.obj : error LNK2005: "unsigned int lastByte" (?lastByte@@3IA) 已经在 main.obj 中定义
-     1>MD5.obj : error LNK2005: "unsigned int A" (?A@@3IA) 已经在 main.obj 中定义
-     1>MD5.obj : error LNK2005: "unsigned int B" (?B@@3IA) 已经在 main.obj 中定义
-     1>MD5.obj : error LNK2005: "unsigned int C" (?C@@3IA) 已经在 main.obj 中定义
-     1>MD5.obj : error LNK2005: "unsigned int D" (?D@@3IA) 已经在 main.obj 中定义
-     1>MD5.obj : error LNK2005: "unsigned int * chunk" (?chunk@@3PAIA) 已经在 main.obj 中定义
-     1>D:\我的\学习\比特科技\Project\Project\项目1\计算文件MD5\Debug\计算文件MD5.exe : fatal error LNK1169: 找到一个或多个多重定义的符号
      1>已完成生成项目“D:\我的\学习\比特科技\Project\Project\项目1\计算文件MD5\计算文件MD5\计算文件MD5.vcxproj”(Build 个目标)的操作 - 失败。
 
 生成失败。
 
-已用时间 00:00:01.33
+已用时间 00:00:01.57
