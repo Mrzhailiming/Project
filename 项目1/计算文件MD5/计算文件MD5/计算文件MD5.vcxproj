@@ -78,12 +78,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MD5.cpp" />
     <ClCompile Include="SearchDelFile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FleManager.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="MD5.h" />
     <ClInclude Include="SearchDelFile.h" />
   </ItemGroup>

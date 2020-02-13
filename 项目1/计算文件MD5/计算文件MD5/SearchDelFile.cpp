@@ -1,7 +1,7 @@
 #include "SearchDelFile.h"
 
 
-void search(const std::string& path, std::vector<std::string>& files){
+void searchFile(const std::string& path, std::unordered_set<std::string>& files){
 	std::string  s = path + "\\" + "*.*";
 	_finddata_t filedata;
 	long handle = _findfirst(s.c_str(), &filedata);
@@ -17,11 +17,20 @@ void search(const std::string& path, std::vector<std::string>& files){
 		//当前为目录,继续搜索
 		if (filedata.attrib & _A_SUBDIR){
 			if (strcmp(filedata.name, ".") != 0 && strcmp(filedata.name, "..") != 0)
-			search(path + "\\" + filedata.name, files);
+			searchFile(path + "\\" + filedata.name, files);
 		}
 		else{
-			files.push_back(path +"\\" + filedata.name);
+			files.insert(path +"\\" + filedata.name);
 		}
 	} while (_findnext(handle, &filedata) == 0);
 	_findclose(handle);
+}
+
+void delFile(const char* fileName){
+	if (remove(fileName) == 0){
+		std::cout << "delete file success" << std::endl;
+	}
+	else{
+		perror("delete file error :");
+	}
 }

@@ -1,5 +1,6 @@
 #include "MD5.h"
-#include "searchFile.h"
+#include "SearchDelFile.h"
+#include "FileManager.h"
 using namespace std;;
 
 
@@ -25,11 +26,20 @@ void testGetFileMd5(){
 
 void testSearchFile(){
 	const string path = ".";
-	vector<string> files;
-	search(path, files);
+	unordered_set<string> files;
+	searchFile(path, files);
 	for (const auto& e : files){
 		cout << e << endl;
 	}
+}
+
+void testFileManager(){
+	FileManager fm;
+	string path = ".";
+	fm.scannerFile(path);
+
+
+
 }
 
 
@@ -37,6 +47,7 @@ int main(){
 	//testTurnStr();
 	//testgetStringMd5();
 	//testGetFileMd5();
-	testSearchFile();
+	//testSearchFile();
+	testFileManager();
 	return 0;
 }

@@ -3,14 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <io.h>
+#include <unordered_set>
 
-
-void search(const std::string& path, std::vector<std::string>& files);
-void delFile(const char* fileName){
-	if (remove(fileName) == 0){
-		std::cout << "delete file success" << std::endl;
-	}
-	else{
-		perror("delete file error :");
-	}
-}
+void searchFile(const std::string& path, std::unordered_set<std::string>& files);
+void delFile(const char* fileName);
