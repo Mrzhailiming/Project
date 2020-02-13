@@ -80,9 +80,12 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MD5.cpp" />
+    <ClCompile Include="SearchDelFile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FleManager.h" />
     <ClInclude Include="MD5.h" />
+    <ClInclude Include="SearchDelFile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

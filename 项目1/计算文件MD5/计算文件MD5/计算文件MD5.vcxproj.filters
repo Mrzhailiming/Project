@@ -21,9 +21,18 @@
     <ClCompile Include="MD5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="SearchDelFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MD5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SearchDelFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FleManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

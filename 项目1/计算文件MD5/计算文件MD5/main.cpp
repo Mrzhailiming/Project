@@ -1,4 +1,5 @@
 #include "MD5.h"
+#include "searchFile.h"
 using namespace std;;
 
 
@@ -22,13 +23,20 @@ void testGetFileMd5(){
 	cout << m.getFileMd5("test2.txt").c_str() << endl;
 }
 
-
-
+void testSearchFile(){
+	const string path = ".";
+	vector<string> files;
+	search(path, files);
+	for (const auto& e : files){
+		cout << e << endl;
+	}
+}
 
 
 int main(){
 	//testTurnStr();
 	//testgetStringMd5();
-	testGetFileMd5();
+	//testGetFileMd5();
+	testSearchFile();
 	return 0;
 }
