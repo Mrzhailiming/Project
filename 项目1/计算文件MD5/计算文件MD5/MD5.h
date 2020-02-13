@@ -51,14 +51,10 @@ private:
 	//移位
 	static uint s[64];
 	uint k[64];
-
 	uint _chunk[CHUNK_SIZE];
 	uint A, B, C, D;
 };
 
-
-//字符串的MD5
-//文件的MD5
 
 
 #endif //__MD5_H__

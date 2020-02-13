@@ -86,31 +86,54 @@ void md5::fillChunk(uint* chunk){
 	//剩余不够64bit
 	if (remainNum < 8){
 		//把剩余填充0
-		memset(p, 0, remainNum * 8);
+		memset(p, 0, remainNum);
 		//处理chunk
 		dealChunk(chunk);
 		//把当前chunk全部置为0,当做新开的chunk
-		memset(chunk, 0, CHUNK_BYTE * 8);
+		memset(chunk, 0, CHUNK_BYTE);
 	}
 	else{
-		memset(p, 0, remainNum * 4);
+		memset(p, 0, remainNum);
 	}
+	//把原始长度赋值到最后64bit
+	unsigned long long totalBit = _totalByte;
+	totalBit *= 8;
+	((unsigned long long*)chunk)[7] = totalBit;
 	dealChunk(chunk);
 }
 
 //整型转字符串,最后的MD5输出
 std::string md5::turnStr(uint src){
-	
+	static std::string map = "0123456789abcdef";
+	std::string ret;
+	//获取每个字节的数据
+	for (int i = 0; i < 4; ++i){
+		int cur = (src >> (i * 8)) & 0xff;
+		ret += map[cur / 16];
+		ret += map[cur % 16];
+	}
+	return ret;
 }
 
 //计算字符串的md5
 std::string md5::getStringMd5(const std::string& str){
-	uint 
+	uint len = str.size();
+	const char* Cstr = str.c_str();
+	int chunkNum = len / CHUNK_BYTE;
+	for (int i = 0; i < chunkNum; ++i){
+		memcpy(_chunk, Cstr + i * CHUNK_BYTE, CHUNK_BYTE);
+		dealChunk(_chunk);
+	}
+	_totalByte = len;
+	_lastByte = len - chunkNum * CHUNK_BYTE;
+	memcpy(_chunk, Cstr + chunkNum * CHUNK_BYTE, _lastByte);
+	//处理最后一个数据块
+	fillChunk(_chunk);
+	return turnStr(A).append(turnStr(B)).append(turnStr(C)).append(turnStr(D));
 }
 
 //计算文件的md5
 std::string md5::getFileMd5(const char* file){
-	std::ifstream f(file, std::ifstream::binary);
 	//1.全部读进来,空间换时间  
 	//f.read(char*,num)
 	//f.eof()
@@ -118,25 +141,47 @@ std::string md5::getFileMd5(const char* file){
 	//f.beg
 	//F.seekg(0,f.end)
 	//f.tellg()
-	//获取文件的字节数
-	f.seekg(0, f.end);
-	uint len = (uint)f.tellg();
-	f.seekg(0, f.beg);
-	//将文件读入str
-	char* str = new char[len];
-	f.read(str, len);
-	int chunkNum = len / CHUNK_BYTE;
-	for (int i = 0; i < chunkNum; ++i){
-		memcpy(_chunk, str + i * CHUNK_BYTE, CHUNK_BYTE);
-		dealChunk(_chunk);
+	std::ifstream f(file, std::ifstream::binary);
+	if (!f.is_open()){
+		std::cout << file;
+		perror("error");
+		return "";
 	}
-	_totalByte = len;
-	_lastByte = len - chunkNum * CHUNK_BYTE;
-	memcpy(_chunk, str + chunkNum * CHUNK_BYTE, _lastByte);
-	//处理最后一个数据块
-	fillChunk(_chunk);
+	if (!f.eof()){
+		//获取文件的字节数
+		f.seekg(0, f.end);
+		uint len = f.tellg();
+		f.seekg(0, f.beg);
+		//将文件读入str
+		char* str = new char[len];
+		f.read(str, len);
+		int chunkNum = len / CHUNK_BYTE;
+		for (int i = 0; i < chunkNum; ++i){
+			memcpy(_chunk, str + i * CHUNK_BYTE, CHUNK_BYTE);
+			dealChunk(_chunk);
+		}
+		_totalByte = len;
+		_lastByte = len - chunkNum * CHUNK_BYTE;
+		memcpy(_chunk, str + chunkNum * CHUNK_BYTE, _lastByte);
+		//处理最后一个数据块
+		fillChunk(_chunk);
+		delete str;
+	}
 	return turnStr(A).append(turnStr(B)).append(turnStr(C)).append(turnStr(D));
+
+	
 	//2.每次只读一块数据, 时间换空间
 	//f.gcount() //上次读取的字节个数
-
+	/*while (!f.eof()){
+		f.read((char*)_chunk, CHUNK_BYTE);
+		if (f.gcount() != CHUNK_BYTE){
+		_lastByte = f.gcount();
+		break;
+		}
+		dealChunk(_chunk);
+		_totalByte += CHUNK_BYTE;
+		}
+		_totalByte += _lastByte;
+		fillChunk(_chunk);
+		return turnStr(A).append(turnStr(B)).append(turnStr(C)).append(turnStr(D));*/
 }
