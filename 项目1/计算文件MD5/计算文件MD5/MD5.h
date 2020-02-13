@@ -1,5 +1,8 @@
 #ifndef __MD5_H__
 #define  __MD5_H__
+#include <math.h>
+#include <iostream>
+#include <fstream>
 
 typedef unsigned int uint;
 #define CHUNK_BYTE 64//一个chunk的字节数
@@ -20,12 +23,14 @@ typedef unsigned int uint;
 //uint s[64];
 class md5{
 public:
+	md5(){
+		//初始化
+		init();
+	}
 	//初始化
 	void init();
-	//获取文件长度
-	uint totalByte();
-	//获取文件最后一个数据块的长度
-	uint lastByte();
+	//重置
+	void reset();
 
 	//填充冗余信息
 	void fillChunk(uint* chunk);
@@ -35,12 +40,17 @@ public:
 	uint shift(uint tmp, uint shiftNumber);
 
 	///整型转字符串,最后的MD5输出
-	void turnStr(uint src);
+	std::string turnStr(uint src);
+
+	//
+	std::string getStringMd5(const std::string& str);
+	std::string getFileMd5(const char* file);
 private:
 	uint _totalByte;
 	uint _lastByte;
+	//移位
 	static uint s[64];
-	static uint k[64];
+	uint k[64];
 
 	uint _chunk[CHUNK_SIZE];
 	uint A, B, C, D;
@@ -51,4 +61,4 @@ private:
 //文件的MD5
 
 
-#endif __MD5_H__
+#endif //__MD5_H__

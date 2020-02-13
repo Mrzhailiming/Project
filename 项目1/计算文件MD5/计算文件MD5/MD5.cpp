@@ -1,19 +1,8 @@
 #include "MD5.h"
-#include <math.h>
-#include <iostream>
 
 
-//以字节为单位
-uint totalByte;//总共的字节数
-uint lastByte;//最后一个数据块的字节数
-uint A;
-uint B;
-uint C;
-uint D;
-//16 * 4 字节
-uint chunk[CHUNK_SIZE];
-
-
+uint md5::s[64] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23,
+4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
 
 void md5::init(){
 	//初始化ABCD
@@ -28,10 +17,17 @@ void md5::init(){
 	for (int i = 0; i < 64; ++i){
 		k[i] = (uint)(abs(sin(i + 1.0)) * pow(2.0, 32));
 	}
-	s[64] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14,
-		20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23,
-		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10,
-		15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
+	
+}
+
+//重置
+void md5::reset(){
+	A = _atemp;
+	B = _btemp;
+	C = _ctemp;
+	D = _dtemp;
+	//长度
+	_totalByte = _lastByte = 0;
 }
 
 //循环移位
@@ -100,4 +96,47 @@ void md5::fillChunk(uint* chunk){
 		memset(p, 0, remainNum * 4);
 	}
 	dealChunk(chunk);
+}
+
+//整型转字符串,最后的MD5输出
+std::string md5::turnStr(uint src){
+	
+}
+
+//计算字符串的md5
+std::string md5::getStringMd5(const std::string& str){
+	uint 
+}
+
+//计算文件的md5
+std::string md5::getFileMd5(const char* file){
+	std::ifstream f(file, std::ifstream::binary);
+	//1.全部读进来,空间换时间  
+	//f.read(char*,num)
+	//f.eof()
+	//f.end
+	//f.beg
+	//F.seekg(0,f.end)
+	//f.tellg()
+	//获取文件的字节数
+	f.seekg(0, f.end);
+	uint len = (uint)f.tellg();
+	f.seekg(0, f.beg);
+	//将文件读入str
+	char* str = new char[len];
+	f.read(str, len);
+	int chunkNum = len / CHUNK_BYTE;
+	for (int i = 0; i < chunkNum; ++i){
+		memcpy(_chunk, str + i * CHUNK_BYTE, CHUNK_BYTE);
+		dealChunk(_chunk);
+	}
+	_totalByte = len;
+	_lastByte = len - chunkNum * CHUNK_BYTE;
+	memcpy(_chunk, str + chunkNum * CHUNK_BYTE, _lastByte);
+	//处理最后一个数据块
+	fillChunk(_chunk);
+	return turnStr(A).append(turnStr(B)).append(turnStr(C)).append(turnStr(D));
+	//2.每次只读一块数据, 时间换空间
+	//f.gcount() //上次读取的字节个数
+
 }
