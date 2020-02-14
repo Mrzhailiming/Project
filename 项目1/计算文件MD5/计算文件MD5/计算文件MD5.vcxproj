@@ -80,11 +80,13 @@
   <ItemGroup>
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="managerTool.cpp" />
     <ClCompile Include="MD5.cpp" />
     <ClCompile Include="SearchDelFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="managerTool.h" />
     <ClInclude Include="MD5.h" />
     <ClInclude Include="SearchDelFile.h" />
   </ItemGroup>
