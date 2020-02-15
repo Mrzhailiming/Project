@@ -134,13 +134,15 @@ std::string getMd5::getFileMd5(std::string str){
 	fseek(f, 0, SEEK_END);
 	un_int totalByte = ftell(f);
 	rewind(f);
-	un_int chunkNum = totalByte / CHUNK_BYTE;
-	lastChunkByte = totalByte & CHUNK_BYTE;
+	int chunkNum = totalByte / CHUNK_BYTE;
+	lastChunkByte = totalByte % CHUNK_BYTE;
+	char* src = new char[totalByte];
+	fread(src, 1, totalByte, f);
 	for (int i = 0; i < chunkNum; ++i){
-		memcpy(_chunk, f + i * CHUNK_BYTE, CHUNK_BYTE);
+		memcpy(_chunk, src + i * CHUNK_BYTE, CHUNK_BYTE);
 		dealChunk();
 	}
-	memcpy(_chunk, f + chunkNum * CHUNK_BYTE, lastChunkByte);
+	memcpy(_chunk, src + chunkNum * CHUNK_BYTE, lastChunkByte);
 	fillChunk();
 	fclose(f);
 	return turnStr(_a).append(turnStr(_b)).append(turnStr(_c)).append(turnStr(_d));
