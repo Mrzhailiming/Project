@@ -102,8 +102,6 @@ void testTool(){
 			break;
 		}
 	} while (choice != EXIT);
-
-
 }
 int main(){
 	//testTurnStr();
