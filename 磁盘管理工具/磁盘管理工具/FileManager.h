@@ -12,6 +12,10 @@ public:
 	void getAllFilesMd5();
 	void getSameFiles();
 
+	//计算文件MD5
+	void getFILEmd5();
+	void getSTRINGmd5();
+
 	//展示
 	void showAllFile();
 	void showSameFile();

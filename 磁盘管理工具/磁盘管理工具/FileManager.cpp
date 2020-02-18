@@ -44,7 +44,6 @@ void FileManager::getAllFilesMd5(){
 	_md5_name.clear();
 	std::string md5;
 	for (const auto& e : _allFiles){
-		_gMd5.reset();
 		md5 = _gMd5.getFileMd5(e.c_str()).c_str();
 		_name_md5.insert(make_pair(e,md5));
 		_md5_name.insert(make_pair(md5, e));
@@ -167,4 +166,25 @@ void FileManager::delSameFile(){
 		}
 	}
 	std::cout << "\t删除文件数 :" << count << std::endl;
+}
+
+void FileManager::getFILEmd5(){
+	std::cout << "请输入文件名称(包含路径) :";
+	std::string name, str;
+	std::cin >> name;
+	str = _gMd5.getFileMd5(name);
+	std::cout << "文件的md5为 : " << str << std::endl;
+	FILE* f = fopen("Filemd5.txt", "a");
+	fwrite((name + " <-> " + str + " --- ").c_str(), 1, name.size() + str.size() + 10, f);
+	fclose(f);
+}
+void FileManager::getSTRINGmd5(){
+	std::cout << "请输入字符串 :";
+	std::string name, str;
+	std::cin >> name;
+	str = _gMd5.getStrMd5(name);
+	std::cout <<"字符串的md5为 : " << str << std::endl;
+	FILE* f = fopen("Strmd5.txt", "a");
+	fwrite((name + " <-> " + str + " --- ").c_str(), 1, name.size() + str.size() + 10, f);
+	fclose(f);
 }

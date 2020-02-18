@@ -112,6 +112,7 @@ std::string getMd5::turnStr(un_int src){
 
 //获取字符串的MD5
 std::string getMd5::getStrMd5(std::string str){
+	reset();
 	totalByte = str.size();
 	lastChunkByte = totalByte % 64;
 	int chunkNum = totalByte / 64;
@@ -126,6 +127,8 @@ std::string getMd5::getStrMd5(std::string str){
 }
 //获取文件的MD5
 std::string getMd5::getFileMd5(std::string str){
+	//每次调用先重置
+	reset();
 	FILE* f = fopen(str.c_str(), "rb");
 	if (f == nullptr){
 		perror("打开文件失败 :");
