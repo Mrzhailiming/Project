@@ -40,7 +40,7 @@ private:
 	int _k[64];
 	
 	//一个数据块
-	un_int _chunk[CHUNK_SIZE];
+	char _chunk[CHUNK_BYTE];
 	un_int _a, _b, _c, _d;
 	un_int totalByte, lastChunkByte;
 };

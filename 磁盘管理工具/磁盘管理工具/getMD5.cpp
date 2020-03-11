@@ -15,7 +15,7 @@ void getMd5::init(){
 	totalByte = lastChunkByte = 0;
 	for (int i = 0; i < 64; i++)
 	{
-		_k[i] = (int)(abs(sin(i + 1)) * pow(2, 32));
+		_k[i] = (int)floor(abs(sin(i + 1)) * pow(2, 32));
 	}
 }
 //重置
@@ -34,10 +34,10 @@ un_int getMd5::shift(un_int src, un_int num){
 
 void getMd5::dealChunk(){
 	/*
-	F(x,y,z) = (x & y) | ((~x) & z)
-	G(x,y,z) = (x & z) | ( y & (~z))
-	H(x,y,z) = x ^ y ^ z
-	I(x,y,z) = y ^ (x | (~z))
+	F(xb,yc,zd) = (b & c) | ((~b) & d)
+	G(x,y,z) = (b & d) | ( c & (~d))
+	H(x,y,z) = b ^ c ^ d
+	I(x,y,z) = c ^ (b | (~d))
 	*/
 	int a = _a;
 	int b = _b;
@@ -66,7 +66,8 @@ void getMd5::dealChunk(){
 		int tmp = d;
 		d = c;
 		c = b;
-		b = b + shift((a + ret + _k[i] + _chunk[g]), _s[i]);
+		b = b + shift((a + ret + _k[i] + ((int*)_chunk)[g]), _s[i]);
+		a = tmp;
 	}
 	_a += a;
 	_b += b;
@@ -88,9 +89,9 @@ void getMd5::fillChunk(){
 		//处理完最后一个chunk然后再把chunk都置为0,相当于新开辟一个chunk
 		memset(_chunk, 0, CHUNK_BYTE);
 	}
-	else{
-		memset(p + 1, 0, remainNum);
-	}
+	//else{
+	//	memset(p + 1, 0, remainNum);
+	//}
 	unsigned long long totalBit = totalByte;
 	totalBit *= 8;
 	((unsigned long long*)_chunk)[7] = totalBit;
@@ -101,8 +102,8 @@ void getMd5::fillChunk(){
 std::string getMd5::turnStr(un_int src){
 	std::string map = "0123456789abcdef";
 	std::string ret;
-	for (int i = 0; i < 4; ++i){
-		int cur = (src >> i * 8) & 0xff;
+	for (int i = 1; i <= 4; ++i){
+		int cur = (src >> (4 - i) * 8) & 0xff;
 		ret += map[cur / 16];
 		ret += map[cur % 16];
 	}
@@ -129,7 +130,7 @@ std::string getMd5::getStrMd5(std::string str){
 std::string getMd5::getFileMd5(std::string str){
 	//每次调用先重置
 	reset();
-	FILE* f = fopen(str.c_str(), "rb");
+	FILE* f = fopen(str.c_str(), "r");
 	if (f == nullptr){
 		perror("打开文件失败 :");
 		return "";
@@ -137,16 +138,25 @@ std::string getMd5::getFileMd5(std::string str){
 	fseek(f, 0, SEEK_END);
 	un_int totalByte = ftell(f);
 	rewind(f);
-	int chunkNum = totalByte / CHUNK_BYTE;
+	un_int chunkNum = totalByte / CHUNK_BYTE;
 	lastChunkByte = totalByte % CHUNK_BYTE;
-	char* src = new char[totalByte];
-	fread(src, 1, totalByte, f);
-	for (int i = 0; i < chunkNum; ++i){
-		memcpy(_chunk, src + i * CHUNK_BYTE, CHUNK_BYTE);
+	//每次读64个字节
+	char* src = new char[CHUNK_BYTE];
+	while (fread(src, 1, CHUNK_BYTE, f) == 64){
+		memcpy(_chunk, src, CHUNK_BYTE);
 		dealChunk();
 	}
-	memcpy(_chunk, src + chunkNum * CHUNK_BYTE, lastChunkByte);
+	memcpy(_chunk, src, lastChunkByte);
 	fillChunk();
+	////一次性读出所有的字节
+	//char* src = new char[totalByte];
+	//fread(src, 1, totalByte, f);
+	//for (int i = 0; i < chunkNum; ++i){
+	//	memcpy(_chunk, src + i * CHUNK_BYTE, CHUNK_BYTE);
+	//	dealChunk();
+	//}
+	//memcpy(_chunk, src + chunkNum * CHUNK_BYTE, lastChunkByte);
+	//fillChunk();
 	fclose(f);
 	return turnStr(_a).append(turnStr(_b)).append(turnStr(_c)).append(turnStr(_d));
 }

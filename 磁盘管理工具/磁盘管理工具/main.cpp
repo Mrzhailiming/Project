@@ -11,17 +11,19 @@ void testTurnStr(){
 
 void testGetStrMd5(){
 	getMd5 m;
-	std::string str1 = "asdasfasfasfc";
-	std::string str2 = "asdasfasfasfa";
-	std::cout << m.getStrMd5(str1) << std::endl;
-	std::cout << m.getStrMd5(str2) << std::endl;
+	std::string str1 = "MD5";
+	std::string str2 = "t.txt";
+	std::cout << "str1 : "<< m.getStrMd5(str1) << std::endl;
+	std::cout << "str2 : " << m.getStrMd5(str2) << std::endl;
 }
 
 void testGetFileMd5(){
 	getMd5 m;
-	//02468aceb2f828ef277227dc9fe9f155
-	std::string path = "t1.txt";
-	std::cout << m.getFileMd5(path) << std::endl;
+	//std::string path = "8.1.15.zip";
+	std::string path = "./t.txt";
+	//5ff20a4d0ed4a85b61147c76a8f54730 linux
+	//91f155ea5dcc62721b493be7f2d1b35f
+	std::cout << "t.txt ÄÚÈİ MD5 :" << m.getFileMd5(path) << std::endl;
 }
 
 enum {
@@ -99,8 +101,8 @@ void testTool(){
 
 int main(){
 	//testTurnStr();
-	//testGetStrMd5();
+	testGetStrMd5();
 	//testGetFileMd5();
-	testTool();
+	//testTool();
 	return 0;
 }
