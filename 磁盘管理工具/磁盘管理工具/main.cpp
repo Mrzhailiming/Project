@@ -101,8 +101,8 @@ void testTool(){
 
 int main(){
 	//testTurnStr();
-	testGetStrMd5();
+	//testGetStrMd5();
 	//testGetFileMd5();
-	//testTool();
+	testTool();
 	return 0;
 }
