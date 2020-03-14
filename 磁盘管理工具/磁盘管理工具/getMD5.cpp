@@ -29,7 +29,7 @@ void getMd5::reset(){
 
 //Ñ­»·×óÒÆ
 un_int getMd5::shift(un_int src, un_int num){
-	return (src << num) | (src << (32 - num));
+	return (src << num) | (src >> (32 - num));
 }
 
 void getMd5::dealChunk(){
