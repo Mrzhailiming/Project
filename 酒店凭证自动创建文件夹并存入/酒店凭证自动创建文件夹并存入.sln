@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "酒店凭证自动创建文件夹并存入", "酒店凭证自动创建文件夹并存入\酒店凭证自动创建文件夹并存入.vcxproj", "{278A19ED-E07F-4B1F-9C52-64156A855DF9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{278A19ED-E07F-4B1F-9C52-64156A855DF9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{278A19ED-E07F-4B1F-9C52-64156A855DF9}.Debug|Win32.Build.0 = Debug|Win32
+		{278A19ED-E07F-4B1F-9C52-64156A855DF9}.Release|Win32.ActiveCfg = Release|Win32
+		{278A19ED-E07F-4B1F-9C52-64156A855DF9}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
