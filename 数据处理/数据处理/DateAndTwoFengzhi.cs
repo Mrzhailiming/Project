@@ -14,6 +14,9 @@ namespace Data
         //数据类型, uint32, uint32 保存读取一个文件的数据
         //Dictionary<UInt32, UInt32> _data = new Dictionary<uint, uint>();
 
+        //<文件名, 完整路径>
+        Dictionary<string, string> _allFiles = new Dictionary<string,string>();
+
         //<文件名, <行号, 值>>
         Dictionary<string, Dictionary<UInt32, UInt32>> _data = 
             new Dictionary<string,Dictionary<uint,uint>>();
@@ -24,11 +27,11 @@ namespace Data
         //文件目录
         string _path;
 
-        DateAndTwoFengzhi()
+        public DateAndTwoFengzhi()
         {
             _path = null;
         }
-        DateAndTwoFengzhi(string path)
+        public DateAndTwoFengzhi(string path)
         {
             _path = path;
             //读取文件
@@ -36,13 +39,11 @@ namespace Data
         }
         private void Init()
         {
-            //<文件名, 完整路径>
-            Dictionary<string, string> allFiles;
 
-            if (!FileReader.ScanAllFiles(_path, out allFiles) || allFiles.Count <= 0) return;
+            if (!FileReader.ScanAllFiles(_path, out _allFiles) || _allFiles.Count <= 0) return;
 
             //读取所有文件的内容
-            foreach (string fileFullName in allFiles.Values)
+            foreach (string fileFullName in _allFiles.Values)
             {
                 Dictionary<UInt32, string> lineDic = new Dictionary<uint, string>();
                 if (!FileReader.ReadFileLines(fileFullName, out lineDic) || lineDic.Count <= 0) continue;
@@ -53,17 +54,20 @@ namespace Data
                 {
                     //获取一行的数值
                     UInt32 value = GetLineValue(line);
+                    UInt32 date = GetLineData(line);
                     //放进字典
-                    AddDic(fileFullName, lineNum++, value);
+                    //AddDic(fileFullName, date, value);
+                    AddDic(fileFullName, lineNum, lineNum++);
 
                     //Logger.Log(LogType.ReadLine, string.Format("{0}:{1}", fileFullName, line));
                 }
             }
             
-            
-
         }
-
+        public Dictionary<string, string> GetAllFiles()
+        {
+            return _allFiles;
+        }
         public UInt32[] GetPeaks(string fileName)
         {
             return CalCulPeaks(fileName);
@@ -102,7 +106,10 @@ namespace Data
             //遍历
             foreach (UInt32 value in orderedDic.Values)
             {
-
+                if (value >= 10)
+                {
+                    peakFirst = 10;
+                }
             }
 
             return null;
@@ -115,6 +122,10 @@ namespace Data
         private UInt32 GetLineValue(string line)
         {
 
+            return UInt32.MinValue;
+        }
+        private UInt32 GetLineData(string line)
+        {
             return UInt32.MinValue;
         }
         /// <summary>

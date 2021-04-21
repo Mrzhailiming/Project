@@ -12,8 +12,8 @@ namespace Data
     /// </summary>
     public class Logger
     {
-        static Queue<LogData> _dataQueue;
-        static public void Log(LogType type, string data)
+        static Queue<LogData> _dataQueue = new Queue<LogData>();
+        public static void Log(LogType type, string data)
         {
             LogData logData = new LogData()
             {
@@ -23,10 +23,10 @@ namespace Data
             _dataQueue.Enqueue(logData);
         }
     }
-    enum LogType
+    public enum LogType
     {
         Error, //错误
-        ReadFile, //扫描文件
+        ScanFile, //扫描文件
         ReadLine, //读取文件的每一行
 
     }

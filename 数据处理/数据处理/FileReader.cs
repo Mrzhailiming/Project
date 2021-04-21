@@ -21,7 +21,7 @@ namespace Data
         /// <returns></returns>
         public static bool ScanAllFiles(string path, out Dictionary<string, string> allFiles)
         {
-            allFiles = null;
+            allFiles = new Dictionary<string,string>();
             if (null == path) return false;
             try
             {
