@@ -42,10 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DateAndTwoFengzhi.cs" />
-    <Compile Include="FileReader.cs" />
+    <Compile Include="FileStream.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Singletion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

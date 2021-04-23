@@ -12,7 +12,7 @@ namespace Data
     {
         static void Main(string[] args)
         {
-            
+
             string path = Directory.GetCurrentDirectory();
             DateAndTwoFengzhi d = new DateAndTwoFengzhi(path);
 
