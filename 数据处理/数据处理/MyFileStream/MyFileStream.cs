@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using System.IO;
 
+
 namespace Data
 {
     /// <summary>
@@ -90,8 +91,8 @@ namespace Data
         /// <summary>
         /// 写
         /// </summary>
-        /// <param name="fileFullPath"></param>
-        /// <param name="lineDic"></param>
+        /// <param name="fileFullPath">完整路径</param>
+        /// <param name="lineDic">文件名</param>
         /// <returns></returns>
         public static bool WriteFile(string fileFullPath, string fileName, string data)
         {

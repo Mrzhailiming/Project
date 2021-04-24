@@ -13,7 +13,7 @@ namespace Data
     /// <summary>
     /// 打印日志
     /// </summary>
-    public class Logger : Singletion<Logger>
+    internal class Logger : Singletion<Logger>
     {
         static Queue<LogData> _dataQueue = new Queue<LogData>();
         static string _logFileFullPath = null;
@@ -31,6 +31,11 @@ namespace Data
             //Thread t = new Thread(Execute);
             //t.Start();
         }
+        /// <summary>
+        /// 往queue中Push
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="data"></param>
         public void Log(LogType type, string data)
         {
             LogData logData = new LogData()
@@ -64,7 +69,7 @@ namespace Data
             }
         }
     }
-    public enum LogType
+    internal enum LogType
     {
         Error, //错误
         ScanFile, //扫描文件
