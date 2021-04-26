@@ -15,11 +15,15 @@ namespace Data
     /// </summary>
     internal class Logger : Singletion<Logger>
     {
+        //日志队列
         static Queue<LogData> _dataQueue = new Queue<LogData>();
+        //日志路径
         static string _logFileFullPath = null;
+        //日志名称
         string _logFileName = null;
-        //用于打印起始行
+        //用于判断是否需要打印起始行
         public static HashSet<string> _hadLogFiles = new HashSet<string>();
+
         public Logger()
         {
             _logFileFullPath = string.Format("{0}\\log",Directory.GetCurrentDirectory());
@@ -55,6 +59,7 @@ namespace Data
             while (true)
             {
                 LogData data;
+                //double check
                 lock (_dataQueue)
                 {
                     if (_dataQueue.Count > 0)
@@ -64,6 +69,7 @@ namespace Data
                             data = _dataQueue.Dequeue();
 
                         }
+                        //判断是否需要打印起始行
                         if (!_hadLogFiles.Contains(data._type.ToString()))
                         {
                             MyFileStream.WriteFile(_logFileFullPath, data._type.ToString(), 
@@ -71,6 +77,7 @@ namespace Data
 
                             _hadLogFiles.Add(data._type.ToString());
                         }
+                        //打印
                         MyFileStream.WriteFile(_logFileFullPath, data._type.ToString(), data._data);
                     }
                 }
@@ -78,6 +85,9 @@ namespace Data
             }
         }
     }
+    /// <summary>
+    /// 每个成员都会创建一个文件
+    /// </summary>
     internal enum LogType
     {
         Error, //错误
@@ -85,6 +95,7 @@ namespace Data
         ReadLine, //读取文件的每一行
         JieXiFailed, //解析行失败
         WriteFileFailed,//写入文件失败
+        FileNotExist, //文件不存在
 
     }
     internal struct LogData

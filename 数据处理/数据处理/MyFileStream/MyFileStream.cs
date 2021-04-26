@@ -62,6 +62,13 @@ namespace Data
             lineDic = new Dictionary<uint, string>();
             try
             {
+                //检查文件是否存在
+                if (!File.Exists(fileFullPath))
+                {
+                    Console.WriteLine("文件不存在");
+                    Logger.Instance().Log(LogType.FileNotExist, fileFullPath);
+                    return false;
+                }
                 using (StreamReader reader = new StreamReader(fileFullPath))
                 {
                     string line = null;

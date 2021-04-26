@@ -24,11 +24,17 @@ namespace Data
 
         public void Init()
         {
+            //获取程序当前路径
+            _curFullPath = Directory.GetCurrentDirectory();
+            _manager = new DateAndTwoFengzhi(_curFullPath);
+
+            _allFiles = _manager.GetAllFiles();
             Thread th = new Thread(Execute);
             th.Start();
         }
         public void Execute()
         {
+            Console.WriteLine("menu启动成功");
             while (!_exit)
             {
                 PrintMenu();
@@ -37,16 +43,13 @@ namespace Data
                 Console.WriteLine("请输入：");
                 ReadChoice();
             }
-            Console.WriteLine("退出成功");
+            Console.WriteLine("menu退出成功");
         }
+        /// <summary>
+        /// 开始输出峰值
+        /// </summary>
         private void Start()
         {
-            //获取程序当前路径
-            _curFullPath = Directory.GetCurrentDirectory();
-            _manager = new DateAndTwoFengzhi(_curFullPath);
-
-            _allFiles = _manager.GetAllFiles();
-
             //输出一个开始行
             OutPutPeaks(_curFullPath, "<-start->", new UInt32[1]);
             foreach (string fileFullName in _allFiles.Values)
@@ -88,7 +91,7 @@ namespace Data
                 string.Format("{0} {1}\t{2};\t{3}\t{4}", peaks[0], peaks[1], fileFullName, DateTime.Now.ToString(), _counter++));
         }
         /// <summary>
-        /// read用户选择
+        /// read用户的选择
         /// </summary>
         private bool ReadChoice()
         {
@@ -101,7 +104,7 @@ namespace Data
             catch (Exception ex)
             {
                 //第一次输入的读取的为 ""
-                ch = (int)Choice.Srart;
+                ch = -1;
             }
             switch (ch)
             {
@@ -113,6 +116,9 @@ namespace Data
                     break;
                 case (int)Choice.OneFile:
                     OneFile();
+                    break;
+                case (int)Choice.ReOneFile:
+                    ReOneFile();
                     break;
                 case (int)Choice.Exit:
                     Exit();
@@ -151,16 +157,30 @@ namespace Data
         /// </summary>
         private void ReReadChoice()
         {
-            Console.WriteLine("输入错误请重新输入：");
+            Console.WriteLine("请重新输入：");
             ReadChoice();
         }
+        /// <summary>
+        /// 计算一个文件的峰值
+        /// </summary>
         private void OneFile()
         {
             Console.Write("请把文件拖到此处或者输入文件完整路径：");
             string fileFullName = Console.ReadLine();
-
             UInt32[] peaks = _manager.GetPeaks(fileFullName);
-            OutPutPeaks(_curFullPath, fileFullName, peaks); ;
+            if (peaks.Length > 0)
+            {
+                OutPutPeaks(_curFullPath, fileFullName, peaks);
+            }
+        }
+        /// <summary>
+        /// 重新计算一个文件的峰值
+        /// </summary>
+        private void ReOneFile()
+        {
+            Console.Write("请把文件拖到此处或者输入文件完整路径：");
+            string fileFullName = Console.ReadLine();
+            _manager.ReGetPeaks(fileFullName);
         }
         /// <summary>
         /// 退出
@@ -189,5 +209,6 @@ namespace Data
         Srart = 49,
         Restart = 50,
         OneFile = 51,
+        ReOneFile = 52,
     }
 }

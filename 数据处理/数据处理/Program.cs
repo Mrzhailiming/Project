@@ -12,11 +12,17 @@ namespace Data
     {
         static void Main(string[] args)
         {
-            Menu m = new Menu();
-            m.Init();
+            try
+            {
+                Menu m = new Menu();
+                m.Init();
 
-            Console.WriteLine("menu启动成功");
-            Console.ReadKey();
+                Console.ReadKey();
+            }
+            catch(Exception ex)
+            {
+                ;
+            }
         }
     }
 }
