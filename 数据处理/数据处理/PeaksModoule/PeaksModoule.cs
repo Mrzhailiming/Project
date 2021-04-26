@@ -9,10 +9,10 @@ namespace Data
     public class PeaksModoule
     {
 
-        //<文件名, 完整路径>
+        //<文件完整路径, 完整路径>
         public Dictionary<string, string> _allFiles = new Dictionary<string, string>();
 
-        //<文件名, <行号, 值>>
+        //<文件完整路径, <行号, 值>>
         public Dictionary<string, Dictionary<UInt32, UInt32>> _data = 
             new Dictionary<string,Dictionary<uint,uint>>();
 
@@ -45,22 +45,10 @@ namespace Data
 
             if (!MyFileStream.ScanAllFiles(_path, out _allFiles) || _allFiles.Count <= 0) return;
 
-            //读取所有文件的内容
+            
             foreach (string fileFullName in _allFiles.Values)
             {
-                Dictionary<UInt32, string> lineDic;
-                if (!MyFileStream.ReadFileLines(fileFullName, out lineDic) || lineDic.Count <= 0) continue;
-
-                //获取每一行的date, 和对应的值
-                foreach (string line in lineDic.Values)
-                {
-                    //获取一行的数值
-                    UInt32 date = GetLineDate(line);
-                    UInt32 value = GetLineValue(line);
-                    
-                    //放进字典
-                    AddDic(fileFullName, date, value);
-                }
+                ReadAndDecodeFile(fileFullName);
             }
             
         }
@@ -77,31 +65,41 @@ namespace Data
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public UInt32[] GetPeaks(string fileName)
+        public UInt32[] GetPeaks(string fileFullName)
         {
-            return CalCulPeaks(_allFiles[fileName]);
+            string data;
+            if (!_allFiles.TryGetValue(fileFullName, out data))
+            {
+                //文件没有扫到
+                _allFiles[fileFullName] = fileFullName;
+            }
+            
+            Dictionary<UInt32, UInt32> outData;
+            if (!_data.TryGetValue(fileFullName, out outData))
+            {
+                //没有读取文件的内容
+                ReadAndDecodeFile(fileFullName);
+            }
+
+            UInt32[] retData;
+            if (!_file2peaks.TryGetValue(fileFullName, out retData))
+            {
+                //没有计算峰值
+                CalCulPeaks(_allFiles[fileFullName], outData, out retData);
+            }
+
+            return retData;
+            
         }
         /// <summary>
         /// 计算峰值
         /// </summary>
         /// <returns></returns>
-        private UInt32[] CalCulPeaks(string fileFullName)
+        private void CalCulPeaks(string fileFullName, Dictionary<UInt32, UInt32> data, out UInt32[] retData)
         {
-            //已经计算过了
-            UInt32[] retData;
-
-            //1.有无这个文件
-            Dictionary<UInt32, UInt32> outData;
-            if (!_data.TryGetValue(fileFullName, out outData)) return null;
-
-            //2.峰值缓存
-            if (_file2peaks.TryGetValue(fileFullName, out retData)) return retData;
-           
-            //2.找峰值
-            retData = findPeaks(outData);
+            retData = findPeaks(data);
             _file2peaks[fileFullName] = retData;
 
-            return retData;
         }
         /// <summary>
         /// 在数据中查找峰值，(子类重写)
@@ -227,6 +225,46 @@ namespace Data
                 _data[fileFullName] = outData;
             }
             outData.Add(lineNum++, value);
+        }
+        /// <summary>
+        /// 读取一个文件的所有行，并解析
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        private void ReadAndDecodeFile(string fileFullName)
+        {
+            Dictionary<UInt32, string> lineDic;
+            //读取文件的内容
+            if (!MyFileStream.ReadFileLines(fileFullName, out lineDic) || lineDic.Count <= 0)
+            {
+                return;
+            }
+
+            //获取每一行的date, 和对应的值
+            foreach (string line in lineDic.Values)
+            {
+                //获取一行的数值
+                UInt32 date = GetLineDate(line);
+                UInt32 value = GetLineValue(line);
+
+                //放进字典
+                AddDic(fileFullName, date, value);
+            }
+        }
+        virtual public void Reset()
+        {
+            //清除这个，重新打印起始行
+            Logger._hadLogFiles.Clear();
+            //<文件完整路径, 完整路径>
+            _allFiles.Clear();
+
+            //<文件完整路径, <行号, 值>>
+            _data.Clear();
+
+            //<文件完整路径, 峰值>
+            _file2peaks.Clear();
+
+            //文件目录
+            _path = "";
         }
     }
     /// <summary>

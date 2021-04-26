@@ -35,7 +35,7 @@ namespace Data
                     string exname = fileName.Substring(fileName.LastIndexOf(".") + 1);//得到后缀名
                     if (".txt".IndexOf(fileName.Substring(fileName.LastIndexOf(".") + 1)) > -1)//如果后缀名为.txt文件
                     {
-                        allFiles[fileInfo.Name] = fileInfo.FullName;
+                        allFiles[fileInfo.FullName] = fileInfo.FullName;
                         //记录日志
                         Logger.Instance().Log(LogType.ScanFile, fileInfo.FullName);
                     }

@@ -18,6 +18,8 @@ namespace Data
         static Queue<LogData> _dataQueue = new Queue<LogData>();
         static string _logFileFullPath = null;
         string _logFileName = null;
+        //用于打印起始行
+        public static HashSet<string> _hadLogFiles = new HashSet<string>();
         public Logger()
         {
             _logFileFullPath = string.Format("{0}\\log",Directory.GetCurrentDirectory());
@@ -61,6 +63,13 @@ namespace Data
                         {
                             data = _dataQueue.Dequeue();
 
+                        }
+                        if (!_hadLogFiles.Contains(data._type.ToString()))
+                        {
+                            MyFileStream.WriteFile(_logFileFullPath, data._type.ToString(), 
+                                string.Format("<-begin line 文件名-数据 {0}->", DateTime.Now.ToString()));
+
+                            _hadLogFiles.Add(data._type.ToString());
                         }
                         MyFileStream.WriteFile(_logFileFullPath, data._type.ToString(), data._data);
                     }

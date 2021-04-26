@@ -18,7 +18,11 @@ namespace Data
         {
             ;
         }
+        override public void Reset()
+        {
+            base.Reset();
 
+        }
     }
 
     
