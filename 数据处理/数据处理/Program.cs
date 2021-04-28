@@ -21,7 +21,7 @@ namespace Data
             }
             catch(Exception ex)
             {
-                ;
+                Console.WriteLine("{0}", ex.ToString());
             }
         }
     }

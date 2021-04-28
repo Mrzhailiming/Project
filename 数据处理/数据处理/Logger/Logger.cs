@@ -20,7 +20,7 @@ namespace Data
         //日志路径
         static string _logFileFullPath = null;
         //日志名称
-        string _logFileName = null;
+        //string _logFileName = null;
         //用于判断是否需要打印起始行
         public static HashSet<string> _hadLogFiles = new HashSet<string>();
 
@@ -73,7 +73,7 @@ namespace Data
                         if (!_hadLogFiles.Contains(data._type.ToString()))
                         {
                             MyFileStream.WriteFile(_logFileFullPath, data._type.ToString(), 
-                                string.Format("<-begin line 文件名-数据 {0}->", DateTime.Now.ToString()));
+                                string.Format("<-begin line {0}->", DateTime.Now.ToString()));
 
                             _hadLogFiles.Add(data._type.ToString());
                         }
@@ -96,7 +96,7 @@ namespace Data
         JieXiFailed, //解析行失败
         WriteFileFailed,//写入文件失败
         FileNotExist, //文件不存在
-
+        InputError,//输入出错
     }
     internal struct LogData
     {

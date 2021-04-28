@@ -9,8 +9,12 @@ namespace Data
     public class PeaksModoule
     {
 
-        //<文件完整路径, 完整路径>
-        public Dictionary<string, string> _allFiles = new Dictionary<string, string>();
+        //<文件完整路径, 文件完整路径> 存储的是默认路径下的文件(程序运行的路径）
+        public Dictionary<string, string> _allFiles = new Dictionary<string,string>();
+
+        //path，<文件完整路径， 文件完整路径>  存储指定路径下的文件
+        public Dictionary<string, Dictionary<string, string>> _pathAllFiles =
+            new Dictionary<string, Dictionary<string, string>>();
 
         //<文件完整路径, <行号, 值>>
         public Dictionary<string, Dictionary<UInt32, UInt32>> _data = 
@@ -32,18 +36,17 @@ namespace Data
         public PeaksModoule(string path)
         {
             _path = path;
-            //读取文件
-            Init();
         }
         /// <summary>
         /// 初始化
         /// 1。扫描所有文件
         /// 2。读取文件所有内容
         /// </summary>
-        private void Init()
+        public void Init()
         {
-
-            if (!MyFileStream.ScanAllFiles(_path, out _allFiles) || _allFiles.Count <= 0) return;
+            string path = _path;
+            MyFileStream.ScanAllFiles(path, _allFiles);
+            if (_allFiles.Count <= 0) return;
 
             
             foreach (string fileFullName in _allFiles.Values)
@@ -118,13 +121,17 @@ namespace Data
         /// 获取文件的峰值
         /// </summary>
         /// <param name="fileName"></param>
-        /// <returns></returns>
+        /// <returns>可能返回UInt32【0】</returns>
         public UInt32[] GetPeaks(string fileFullName)
         {
+            
             CheckFile(fileFullName);
 
             Dictionary<UInt32, UInt32> fileData;
-            CheckFileData(fileFullName, out fileData);
+            if(!CheckFileData(fileFullName, out fileData))
+            {
+                return new UInt32[0];
+            }
 
             UInt32[] retData;
             CheckFilePeaks(fileFullName, out retData);
@@ -142,12 +149,19 @@ namespace Data
             CheckFile(fileFullName);
 
             Dictionary<UInt32, UInt32> fileData;
-            CheckFileData(fileFullName, out fileData);
-
             UInt32[] retData;
-            //计算峰值
-            CalCulPeaks(_allFiles[fileFullName], fileData, out retData);
-            
+            //重新读取文件内容
+            ReadAndDecodeFile(fileFullName);
+
+            if (_data.TryGetValue(fileFullName, out fileData))
+            {
+                //计算峰值
+                CalCulPeaks(_allFiles[fileFullName], fileData, out retData);
+            }
+            else
+            {
+                retData = new UInt32[0];
+            }
             return retData;
 
         }
@@ -185,71 +199,47 @@ namespace Data
         /// <param name="orderedDic"></param>
         virtual public UInt32[] findPeaks(Dictionary<UInt32, UInt32> data)
         {
-            UInt32[] ret = new UInt32[2] { 0, 0 };
+            UInt32[] ret;
             //排序
             try
             {
+                //排序
                 Dictionary<UInt32, UInt32> orderedDic =
                 data.OrderBy(p => p.Key).ToDictionary(p => p.Key, o => o.Value);
-                UInt32 peakFirst = _beginValue;
-                UInt32 peakSecond = _beginValue;
-                UInt32 peakThree = _beginValue;
-                bool first = false;//第一个峰值的标志
-                bool second = false;//峰谷
-                bool third = false;//第二个峰值
-                //遍历
-                foreach (UInt32 value in orderedDic.Values)
+
+                Queue<UInt32> peaksQueue = new Queue<uint>();
+
+                Array arr = orderedDic.Values.ToArray();
+                int i = 0;
+                //找到有效数据的起始值
+                for (i = 0; i < arr.Length; ++i)
                 {
-                    //小于10的数据不要
-                    if (value <= 10)
-                    {
-                        continue;
-                    }
-                    //第一个峰值
-                    if (!first)
-                    {
-                        if (value > peakFirst)
-                        {
-                            peakFirst = value;
-                        }
-                        else//找到
-                        {
-                            peakSecond = value;
-                            first = true;
-                        }
-                    }
-                    //峰谷
-                    else if (!second)
-                    {
-                        if (value < peakSecond)
-                        {
-                            peakSecond = value;
-                        }
-                        else//找到
-                        {
-                            second = true;
-                        }
-                    }
-                    //第二个峰值
-                    else if (!third)
-                    {
-                        if (value > peakThree)
-                        {
-                            peakThree = value;
-                        }
-                        else
-                        {
-                            third = true;
-                        }
-                    }
-                    else
+                    if (Convert.ToUInt32(arr.GetValue(i)) >= _beginValue)
                     {
                         break;
                     }
                 }
-                //
-                ret[0] = peakFirst;
-                ret[1] = peakThree;
+
+                //i必须大于等于4， 不然increase会越界
+                if (i < 4)
+                {
+                    i = 4;
+                }
+
+                for (; i < arr.Length - 4; ++i)
+                {
+                    if (Increace(arr, i) && DeIncreace(arr, i))
+                    {
+                        peaksQueue.Enqueue((UInt32)arr.GetValue(i));
+                    }
+                }
+
+                i = 0;
+                ret = new UInt32[peaksQueue.Count];
+                foreach (UInt32 peak in peaksQueue)
+                {
+                    ret[i++] = peak;
+                }
                 return ret;
             }
             catch (Exception ex)
@@ -257,7 +247,44 @@ namespace Data
                 //异常日志
                 Logger.Instance().Log(LogType.Error, ex.ToString());
             }
+            ret = new UInt32[0];
             return ret;
+        }
+        /// <summary>
+        /// 判断递增
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private bool Increace(Array arr, int index)
+        {
+            if (Convert.ToUInt32(arr.GetValue(index)) > Convert.ToUInt32(arr.GetValue(index - 1))
+                && Convert.ToUInt32(arr.GetValue(index - 1)) > Convert.ToUInt32(arr.GetValue(index - 2))
+                && Convert.ToUInt32(arr.GetValue(index - 2)) > Convert.ToUInt32(arr.GetValue(index - 3))
+                && Convert.ToUInt32(arr.GetValue(index - 3)) > Convert.ToUInt32(arr.GetValue(index - 4))
+                )
+            {
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 判断递减
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private bool DeIncreace(Array arr, int index)
+        {
+            if (Convert.ToUInt32(arr.GetValue(index + 1)) < Convert.ToUInt32(arr.GetValue(index))
+                && Convert.ToUInt32(arr.GetValue(index + 2)) < Convert.ToUInt32(arr.GetValue(index + 1))
+                && Convert.ToUInt32(arr.GetValue(index + 3)) < Convert.ToUInt32(arr.GetValue(index + 2))
+                && Convert.ToUInt32(arr.GetValue(index +4)) < Convert.ToUInt32(arr.GetValue(index + 3))
+                )
+            {
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// 解析每一行的数值,（根据规则解析，子类重写）
@@ -273,7 +300,8 @@ namespace Data
             }
             catch (Exception ex)
             {
-                Logger.Instance().Log(LogType.JieXiFailed, string.Format("GetLineValue error line:{0}", line));
+                Logger.Instance().Log(LogType.JieXiFailed, string.Format("GetLineValue error line:{0}\r\n{1}",
+                    line, ex.ToString()));
             }
             return UInt32.MinValue;
         }
@@ -292,7 +320,8 @@ namespace Data
             }
             catch (Exception ex)
             {
-                Logger.Instance().Log(LogType.JieXiFailed, string.Format("GetLineDate error line:{0}", line));
+                Logger.Instance().Log(LogType.JieXiFailed, string.Format("GetLineDate error line:{0}\r\n", 
+                    line, ex.ToString()));
             }
             return UInt32.MinValue;
         }
@@ -310,7 +339,11 @@ namespace Data
                 outData = new Dictionary<uint, uint>();
                 _data[fileFullName] = outData;
             }
-            outData.Add(lineNum++, value);
+            UInt32 tmp;
+            if (!outData.TryGetValue(lineNum, out tmp))
+            {
+                outData.Add(lineNum++, value);//如果行的前缀相同，则会被丢弃
+            }
         }
         /// <summary>
         /// 读取一个文件的所有行，并解析

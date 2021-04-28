@@ -20,10 +20,9 @@ namespace Data
         /// <param name="path">路径</param>
         /// <param name="allFiles"><文件名, 完整路径></param>
         /// <returns></returns>
-        public static bool ScanAllFiles(string path, out Dictionary<string, string> allFiles)
+        public static Dictionary<string, string> ScanAllFiles(string path, Dictionary<string, string> allFiles)
         {
-            allFiles = new Dictionary<string,string>();
-            if (null == path) return false;
+            if (null == path) return allFiles;
             try
             {
                 DirectoryInfo root = new DirectoryInfo(path);
@@ -41,7 +40,7 @@ namespace Data
                     }
                     
                 }
-                return true;
+                return allFiles;
             }
             catch (Exception ex)
             {
@@ -49,7 +48,7 @@ namespace Data
                 Logger.Instance().Log(LogType.Error, ex.ToString());
             }
 
-            return false;
+            return allFiles;
         }
         /// <summary>
         /// 读一个文件的所有行
@@ -65,14 +64,16 @@ namespace Data
                 //检查文件是否存在
                 if (!File.Exists(fileFullPath))
                 {
-                    Console.WriteLine("文件不存在");
-                    Logger.Instance().Log(LogType.FileNotExist, fileFullPath);
+                    MyConsole.WriteLine("文件不存在或没有以管理员身份运行或文件名输入不正确，不要带引号", ConsoleColor.Red);
+                    Logger.Instance().Log(LogType.FileNotExist, "文件名：" + fileFullPath);
                     return false;
                 }
                 using (StreamReader reader = new StreamReader(fileFullPath))
                 {
                     string line = null;
                     UInt32 count = 0;
+                    //首行
+                    Logger.Instance().Log(LogType.ReadLine, string.Format("<-{0}:{1}->", fileFullPath, DateTime.Now.ToString()));
                     while ((line = reader.ReadLine()) != null)
                     {
                         lineDic[count++] = line;
@@ -103,7 +104,12 @@ namespace Data
         /// <returns></returns>
         public static bool WriteFile(string fileFullPath, string fileName, string data)
         {
-            string fileFullName = string.Format("{0}\\{1}.txt", fileFullPath, fileName);
+            //(每隔一个小时创建一个新的文件）
+            DateTime now = DateTime.Now;
+            string nowFileName = string.Format("{0}_{1:00}_{2:00}_{3:00}",
+                fileName, now.Year, now.Month, now.Hour); 
+            
+            string fileFullName = string.Format("{0}\\{1}.txt", fileFullPath, nowFileName);
             try
             {
                 if (false == Directory.Exists(fileFullPath))
@@ -124,7 +130,8 @@ namespace Data
             }
             catch (Exception ex)
             {
-                Logger.Instance().Log(LogType.WriteFileFailed, fileFullName);
+                Logger.Instance().Log(LogType.WriteFileFailed,
+                    string.Format("{0}\r\n{1}", fileFullName, ex.ToString()));
             }
             
             return false;
