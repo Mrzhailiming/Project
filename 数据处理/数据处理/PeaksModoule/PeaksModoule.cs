@@ -45,7 +45,7 @@ namespace Data
         public void Init()
         {
             string path = _path;
-            MyFileStream.ScanAllFiles(path, _allFiles);
+            MyFileStream.ScanAllFiles(path, _allFiles, ".txt");
             if (_allFiles.Count <= 0) return;
 
             
@@ -353,7 +353,7 @@ namespace Data
         {
             Dictionary<UInt32, string> lineDic;
             //读取文件的内容
-            if (!MyFileStream.ReadFileLines(fileFullName, out lineDic) || lineDic.Count <= 0)
+            if (!MyFileStream.ReadTxtFileLines(fileFullName, out lineDic) || lineDic.Count <= 0)
             {
                 return false;
             }

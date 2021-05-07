@@ -92,7 +92,8 @@ namespace Data
     {
         Error, //错误
         ScanFile, //扫描文件
-        ReadLine, //读取文件的每一行
+        ReadLineTxt, //读取txt文件的每一行
+        ReadLineCsv,//
         JieXiFailed, //解析行失败
         WriteFileFailed,//写入文件失败
         FileNotExist, //文件不存在
