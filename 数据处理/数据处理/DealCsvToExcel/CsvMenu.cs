@@ -8,6 +8,10 @@ namespace Data
 {
     class CsvMenu : MenuModoule
     {
+        DealCsvOrExcel _Manager = new DealCsvOrExcel();
+        public CsvMenu()
+        {
 
+        }
     }
 }

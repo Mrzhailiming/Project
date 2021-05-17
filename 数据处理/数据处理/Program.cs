@@ -14,11 +14,17 @@ namespace Data
         {
             try
             {
-                PeaksMenu p = new PeaksMenu();
-                p.Init();
+                //PeaksMenu p = new PeaksMenu();
+                //p.Begin();
 
-                //CsvToExcel csv = new CsvToExcel();
-                //csv.Begin();
+                //DealCsvOrExcel csv = new DealCsvOrExcel();
+
+                //CsvMenu menu = new CsvMenu();
+                //menu.Begin();
+
+                ExcelOrTxtMenu menu = new ExcelOrTxtMenu();
+                menu.Begin();
+
 
                 Console.ReadKey();
             }
