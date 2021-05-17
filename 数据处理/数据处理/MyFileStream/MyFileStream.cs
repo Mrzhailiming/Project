@@ -137,7 +137,7 @@ namespace Data
             return false;
         }
         /// <summary>
-        /// 写
+        /// 写（缺陷，每调用一次就要打开一次文件）
         /// </summary>
         /// <param name="fileFullPath">完整路径</param>
         /// <param name="lineDic">文件名</param>

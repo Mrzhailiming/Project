@@ -92,12 +92,13 @@ namespace Data
     {
         Error, //错误
         ScanFile, //扫描文件
-        ReadLineTxt, //读取txt文件的每一行
-        ReadLineCsv,//
+        ReadLineTxt, //记录读取txt文件的每一行
+        ReadLineCsv,//记录读取Csv文件的每一行
         JieXiFailed, //解析行失败
         WriteFileFailed,//写入文件失败
         FileNotExist, //文件不存在
         InputError,//输入出错
+        FindLineByPreLineNotFound,//根据前置行没有找到数据
     }
     internal struct LogData
     {

@@ -23,7 +23,7 @@ namespace Data
 
         Thread _thread;
 
-        virtual public void Init()
+        virtual public void Begin()
         {
             //获取当前路径
             _curFullPath = Directory.GetCurrentDirectory();
@@ -41,7 +41,7 @@ namespace Data
                 
                 Console.WriteLine("请输入选项：");
 
-                ReadChoice();
+                _exit = !ReadChoice();
 
             }
             Console.WriteLine("menu退出成功");
@@ -49,7 +49,8 @@ namespace Data
         
         virtual public void PrintMenu()
         {
-            ;
+            Logger.Instance().Log(LogType.Error, "virtual public void PrintMenu");
+            MyConsole.WriteLine("重写 virtual public void PrintMenu", ConsoleColor.Red);
         }
         
         /// <summary>
@@ -57,6 +58,8 @@ namespace Data
         /// </summary>
         virtual public bool ReadChoice()
         {
+            Logger.Instance().Log(LogType.Error, "virtual public bool ReadChoice");
+            MyConsole.WriteLine("重写 virtual public bool ReadChoice", ConsoleColor.Red);
             return false;
         }
         /// <summary>
@@ -67,18 +70,21 @@ namespace Data
             Console.WriteLine("请重新输入：");
             ReadChoice();
         }
-        virtual public void Start()
-        {
-            ;
-        }
-        public void Restart()
-        {
-            //先把状态置为初始状态
-            //1.读取的数据等等
-            Reset();
-            //
-            Start();
-        }
+        ////这个好像不需要作为虚函数
+        //virtual public void Start()
+        //{
+        //    Logger.Instance().Log(LogType.Error, "virtual public void Start");
+        //    MyConsole.WriteLine("重写 virtual public void Start", ConsoleColor.Red);
+        //}
+        ////这个也是
+        //public void Restart()
+        //{
+        //    //先把状态置为初始状态
+        //    //1.读取的数据等等
+        //    Reset();
+        //    //
+        //    Start();
+        //}
         /// <summary>
         /// 重置一些数据
         /// </summary>
@@ -111,10 +117,10 @@ namespace Data
     {
         Error,
         Exit = 48,
-        Srart = 49,
-        Restart = 50,
-        OneFile = 51,
-        ReOneFile = 52,
+        Srart = 49,//1
+        Restart = 50,//2
+        OneFile = 51,//3
+        ReOneFile = 52,//4
         InputPath = 53,
     }
 }

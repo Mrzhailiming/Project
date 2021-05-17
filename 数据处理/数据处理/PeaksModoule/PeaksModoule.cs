@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Data
 {
+    /// <summary>
+    /// 求峰值模板
+    /// </summary>
     public class PeaksModoule
     {
 

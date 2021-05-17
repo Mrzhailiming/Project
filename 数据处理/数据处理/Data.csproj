@@ -72,14 +72,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CsvMenu.cs" />
-    <Compile Include="CsvToExcel\CsvToExcel.cs" />
-    <Compile Include="DateAndTwoFengzhi.cs" />
+    <Compile Include="DealCsvToExcel\CsvMenu.cs" />
+    <Compile Include="DealCsvToExcel\DealCsvToExcel.cs" />
+    <Compile Include="DealExcelOrTxt\ExcelOrTxtMenu.cs" />
+    <Compile Include="DealPeaks\DateAndTwoFengzhi.cs" />
+    <Compile Include="DealExcelOrTxt\DealExcelOrTxt.cs" />
     <Compile Include="MenuModoule\MenuModoule.cs" />
     <Compile Include="MyConsole\MyConsole.cs" />
     <Compile Include="MyFileStream\MyFileStream.cs" />
     <Compile Include="Logger\Logger.cs" />
-    <Compile Include="PeaksMenu.cs" />
+    <Compile Include="DealPeaks\PeaksMenu.cs" />
     <Compile Include="PeaksModoule\PeaksModoule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
